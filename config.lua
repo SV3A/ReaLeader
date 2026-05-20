@@ -22,8 +22,9 @@ M.bindings = {
   i = {
     label = "Items",
     keys = {
-      s = { label = "Split at cursor", cmd = 40012 },
-      d = { label = "Duplicate",       cmd = 41295 },
+      s = { label = "Split at cursor",      cmd = 40012 },
+      d = { label = "Duplicate",            cmd = 41295 },
+      m = { label = "Insert new MIDI item", cmd = 40214 },
     }
   },
   v = {
@@ -38,6 +39,15 @@ M.bindings = {
     label = "Project",
     keys = {
       s = { label = "Save",   cmd = 40026 },
+    }
+  },
+  s = {
+    label = "Show",
+    keys = {
+      m = { label = "Mixer",          cmd = 40078 },
+      e = { label = "Media explorer", cmd = 50124 },
+      t = { label = "Track manager",  cmd = 40906 },
+      i = { label = "Open items in primary ext editor",  cmd = 40109 },
     }
   },
 }
