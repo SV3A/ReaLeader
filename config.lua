@@ -1,6 +1,6 @@
 local M = {}
 
-M.timeout = 3.0  -- seconds of inactivity before the sequence cancels
+M.timeout = 10.0  -- seconds of inactivity before the sequence cancels
 
 --[[
   To find a command ID: Actions > Show action list > right-click an action >

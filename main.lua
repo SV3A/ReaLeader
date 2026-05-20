@@ -6,7 +6,8 @@ local ui      = dofile(base .. 'ui.lua')
 local actions = dofile(base .. 'actions.lua')
 
 local w, h = ui.window_size(config)
-gfx.init("Leader Keys", w, h, 0)
+gfx.ext_retina = 1
+gfx.init("Shortcuts", w, h, 0)
 gfx.clear = -1
 
 sm.activate()

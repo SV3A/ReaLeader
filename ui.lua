@@ -1,8 +1,11 @@
 local M = {}
 
-local PAD   = 14
-local ROW_H = 24
-local KEY_W = 26
+-- Base constants in logical points; draw() scales them by the retina factor at runtime
+local PAD   = 18
+local ROW_H = 30
+local KEY_W = 32
+
+local logical_w = 380  -- updated by window_size(); used to derive scale factor
 
 local C = {
   bg     = {0.11, 0.11, 0.13},
@@ -25,7 +28,12 @@ local function sorted_items(tbl)
 end
 
 function M.draw(sm, config)
-  local W, H = gfx.w, gfx.h
+  local W, H  = gfx.w, gfx.h
+  local s     = W / logical_w  -- retina scale: 2.0 on HiDPI, 1.0 otherwise
+
+  local pad   = math.floor(PAD   * s)
+  local row_h = math.floor(ROW_H * s)
+  local key_w = math.floor(KEY_W * s)
 
   col(C.bg)
   gfx.rect(0, 0, W, H, 1)
@@ -41,50 +49,50 @@ function M.draw(sm, config)
   local items, title
 
   if sm.is_namespace() then
-    title = "leader"
+    title = "Shortcuts"
     items = sorted_items(config.bindings)
   else
     local ns = config.bindings[sm.namespace]
-    title = "leader  →  " .. sm.namespace .. "   [" .. ns.label .. "]"
+    title = "Shortcuts  →  " .. sm.namespace .. "   [" .. ns.label .. "]"
     items = sorted_items(ns.keys)
   end
 
   -- title
-  gfx.setfont(1, "Arial", 15)
+  gfx.setfont(1, "Helvetica Neue", math.floor(18 * s))
   col(C.title)
-  gfx.x, gfx.y = PAD, PAD
+  gfx.x, gfx.y = pad, pad
   gfx.drawstr(title)
 
   -- separator
-  local sep_y = PAD + 20
+  local sep_y = pad + math.floor(20 * s)
   col(C.sep)
-  gfx.line(PAD, sep_y, W - PAD, sep_y)
+  gfx.line(pad, sep_y, W - pad, sep_y)
 
   -- rows
-  gfx.setfont(1, "Courier New", 13)
+  gfx.setfont(1, "Menlo", math.floor(16 * s))
   for i, item in ipairs(items) do
-    local y = sep_y + 6 + (i - 1) * ROW_H
+    local y = sep_y + math.floor(6 * s) + (i - 1) * row_h
 
     col(C.key_bg)
-    gfx.rect(PAD, y, KEY_W, ROW_H - 3, 1)
+    gfx.rect(pad, y, key_w, row_h - math.floor(3 * s), 1)
 
     col(C.key_fg)
     local kw = gfx.measurestr(item.key)
-    gfx.x = PAD + math.floor((KEY_W - kw) / 2)
-    gfx.y = y + 5
+    gfx.x = pad + math.floor((key_w - kw) / 2)
+    gfx.y = y + math.floor(5 * s)
     gfx.drawstr(item.key)
 
     col(C.label)
-    gfx.x = PAD + KEY_W + 10
-    gfx.y = y + 5
+    gfx.x = pad + key_w + math.floor(10 * s)
+    gfx.y = y + math.floor(5 * s)
     gfx.drawstr(item.label)
   end
 
   -- hint
-  gfx.setfont(1, "Arial", 11)
+  gfx.setfont(1, "Helvetica Neue", math.floor(13 * s))
   col(C.hint)
-  gfx.x = PAD
-  gfx.y = H - PAD - 13
+  gfx.x = pad
+  gfx.y = H - pad - math.floor(13 * s)
   gfx.drawstr("esc: cancel    backspace: back")
 end
 
@@ -98,7 +106,8 @@ function M.window_size(config)
   end
   local rows = math.max(n_ns, max_act)
   local h    = PAD + 20 + 6 + rows * ROW_H + 6 + 20 + PAD
-  return 310, h
+  logical_w  = 380
+  return logical_w, h
 end
 
 return M
