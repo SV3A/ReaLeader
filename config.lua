@@ -17,6 +17,16 @@ M.bindings = {
       x = { label = "Remove",      cmd = 40005 },
       m = { label = "Mute",        cmd = 6     },
       s = { label = "Solo",        cmd = 7     },
+      c = { label = "Color", keys = {
+        c = { label = "Random custom color", cmd = "_SWS_TRACKRANDCOL" },
+      }},
+    }
+  },
+  f = {
+    label = "FXs",
+    keys = {
+      f = { label = "Show FX chain for sel. track(s)", cmd = "_S&M_SHOWFXCHAINSEL" },
+      a = { label = "Show FX browser",      cmd = 40271 },
     }
   },
   i = {

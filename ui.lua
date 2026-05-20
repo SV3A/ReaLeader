@@ -20,16 +20,41 @@ local C = {
 
 local function col(c) gfx.r, gfx.g, gfx.b, gfx.a = c[1], c[2], c[3], 1.0 end
 
-local function sorted_items(tbl)
+local function sorted_items(node)
   local list = {}
-  for k, v in pairs(tbl) do list[#list+1] = {key = k, label = v.label} end
+  for k, v in pairs(node) do list[#list+1] = {key = k, label = v.label} end
   table.sort(list, function(a, b) return a.key < b.key end)
   return list
 end
 
+local function build_title(path, root)
+  if #path == 0 then return "Shortcuts" end
+  local parts = {}
+  local node = root
+  for _, k in ipairs(path) do
+    local entry = node[k]
+    parts[#parts+1] = k .. " [" .. entry.label .. "]"
+    node = entry.keys
+  end
+  return "Shortcuts  →  " .. table.concat(parts, "  →  ")
+end
+
+local function max_node_items(node)
+  local count = 0
+  for _ in pairs(node) do count = count + 1 end
+  local max = count
+  for _, v in pairs(node) do
+    if v.keys then
+      local child = max_node_items(v.keys)
+      if child > max then max = child end
+    end
+  end
+  return max
+end
+
 function M.draw(sm, config)
-  local W, H  = gfx.w, gfx.h
-  local s     = W / logical_w  -- retina scale: 2.0 on HiDPI, 1.0 otherwise
+  local W, H = gfx.w, gfx.h
+  local s    = W / logical_w  -- retina scale: 2.0 on HiDPI, 1.0 otherwise
 
   local pad   = math.floor(PAD   * s)
   local row_h = math.floor(ROW_H * s)
@@ -46,16 +71,8 @@ function M.draw(sm, config)
 
   if sm.is_idle() then return end
 
-  local items, title
-
-  if sm.is_namespace() then
-    title = "Shortcuts"
-    items = sorted_items(config.bindings)
-  else
-    local ns = config.bindings[sm.namespace]
-    title = "Shortcuts  →  " .. sm.namespace .. "   [" .. ns.label .. "]"
-    items = sorted_items(ns.keys)
-  end
+  local title = build_title(sm.path, config.bindings)
+  local items = sorted_items(sm.node)
 
   -- title
   gfx.setfont(1, "Helvetica Neue", math.floor(18 * s))
@@ -97,14 +114,7 @@ function M.draw(sm, config)
 end
 
 function M.window_size(config)
-  local n_ns, max_act = 0, 0
-  for _, ns in pairs(config.bindings) do
-    n_ns = n_ns + 1
-    local c = 0
-    for _ in pairs(ns.keys) do c = c + 1 end
-    if c > max_act then max_act = c end
-  end
-  local rows = math.max(n_ns, max_act)
+  local rows = max_node_items(config.bindings)
   local h    = PAD + 20 + 6 + rows * ROW_H + 6 + 20 + PAD
   logical_w  = 380
   return logical_w, h
