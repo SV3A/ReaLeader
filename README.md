@@ -1,6 +1,9 @@
+
+
+
 # ReaLeader
 
-Vim-style nested keyboard shortcuts for [REAPER](https://www.reaper.fm/). Press a leader key to open a which-key overlay, then type a short sequence to trigger any action - without memorising dozens of modifier combinations.
+Vim-style nested keyboard shortcuts for [REAPER](https://www.reaper.fm/). Press a leader key to open a which-key overlay, then type a short sequence to trigger any action - without memorizing dozens of modifier combinations.
 
 ```
 L → t → m     mute selected track(s)
@@ -8,6 +11,8 @@ L → t → c → c set random custom color
 L → s → m     toggle mixer
 L → f → f     show FX chain
 ```
+
+https://github.com/user-attachments/assets/0045db1e-0785-4932-bbc2-7c39127ee5ed
 
 ## How it works
 
@@ -24,13 +29,12 @@ Sequences can be nested to any depth. Press `Backspace` to step back one level, 
 
 ## Installation
 
-1. Make a folder named `rea_leader/` in the REAPER `Scripts/` directory
-2. Clone the this repo into that folder
-3. In REAPER: **Actions → Show action list → Load ReaScript**
-4. Select `rea_leader/main.lua` - it will appear as *Script: main.lua*
-5. Click **Add shortcut** and press your chosen leader key
+1. Clone the this repo into REAPERs `Scripts/` directory
+2. In REAPER: **Actions → Show action list → Load ReaScript**
+3. Select `rea_leader/main.lua` - it will appear as *Script: main.lua*
+4. Click **Add shortcut** and press your chosen leader key
 
-## Customising bindings
+## Customizing bindings
 
 All bindings live in `config.lua`. The structure is a nested Lua table:
 
@@ -49,7 +53,7 @@ M.bindings = {
 ```
 
 - **`cmd`** accepts a REAPER command ID (number) or a named command string (e.g. `"_SWS_TRACKRANDCOL"`)
-- **`keys`** instead of `cmd` creates a submenu - nesting works at any depth
+- **`keys`** instead of `cmd` creates a sub-menu - nesting works at any depth
 - **`M.timeout`** controls how many seconds of inactivity cancel the sequence
 
 ### Finding command IDs
@@ -62,9 +66,9 @@ The ID is a plain number for built-in actions, or a `_`-prefixed string for SWS/
 
 ```
 rea_leader/
-  main.lua          - entry point; bind this to your leader key
+  main.lua          - entry point (bind this to your leader key)
   config.lua        - all key bindings (the only file you need to edit)
   state_machine.lua - tracks the current position in the binding tree
-  ui.lua            - gfx overlay rendering (HiDPI/Retina aware)
+  ui.lua            - gfx overlay rendering
   actions.lua       - executes REAPER commands
 ```
